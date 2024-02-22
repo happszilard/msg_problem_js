@@ -42,3 +42,10 @@ npm run dev
 - Please refrain from forking this repository.
 - Instead, initiate a new repository for your solution and make it public there (verify that an outside person has access to it).
 - Once completed, inform your point of contact by sending an email.
+
+## Testing
+If you intend to run tests, the application has initialized a mock test in `/src/app.spec.ts` which uses [Jest](https://jestjs.io/docs/getting-started).
+To run all the tests in the application use:
+```bash
+npm test
+```
