@@ -26,7 +26,6 @@ npm run dev
 
 - You cannot perform the transfer functionality between the following types of accounts:
   - Savings Accounts => Checking Accounts
-  - Checking Accounts => Savings Accounts
   - Savings Accounts => Savings Accounts
 - A transaction final amount must be in the same currency as the target account (consider currency conversion).
 - The result of a transaction or withdrawal must not lead to negative account balance
