@@ -1,0 +1,23 @@
+{
+  "name": "cs-banking",
+  "version": "1.0.0",
+  "description": "An interview problem for the Career Start program",
+  "license": "UNLICENSED",
+  "keywords": ["typescript", "javascript"],
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "dev": "tsc && node dist/app.js",
+    "format": "prettier --write .",
+    "format-check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.19",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.10"
+  }
+}
