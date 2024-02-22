@@ -36,3 +36,8 @@ npm run dev
 - Identify and rectify various edge cases in the app (e.g.: transfer functionality)
 - Implement the `withdraw` functionality in the `TransactionManagerService`
 - Implement the `CapitalizationFrequency.QUARTERLY` in the `SavingsManagerService
+
+## Notes
+- Please refrain from forking this repository.
+- Instead, initiate a new repository for your solution and make it public there (verify that an outside person has access to it).
+- Once completed, inform your point of contact by sending an email.
