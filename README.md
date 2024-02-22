@@ -32,9 +32,11 @@ npm run dev
 - The result of a withdrawal must be visible as a transaction
 
 ## Problem Statement
-- Identify and rectify various edge cases in the app (e.g.: transfer functionality)
+- Make sure the `Business Preconditions` are met
 - Implement the `withdraw` functionality in the `TransactionManagerService`
-- Implement the `CapitalizationFrequency.QUARTERLY` in the `SavingsManagerService
+- Implement the `CapitalizationFrequency.QUARTERLY` in the `SavingsManagerService`
+- Identify and rectify various edge cases in the app (e.g.: transfer functionality)
+- Write clear and maintainable code while adhering to coding standards and best practices.
 
 ## Notes
 - Please refrain from forking this repository.
