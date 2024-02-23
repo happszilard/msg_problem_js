@@ -9,6 +9,7 @@ This project simulates a simplified banking system, allowing account holders to 
 Currently, the system accommodates only "RON" and "EURO" as its operational currencies.
 
 ## Setup Instructions
+- Have [Node.js](https://nodejs.org/en) installed with the recommended version. 
 - Begin by cloning the repository using `git clone`
 - Navigate to the project's directory in a terminal.
 - Execute the following command to install necessary dependencies:
