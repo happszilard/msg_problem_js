@@ -1,21 +1,15 @@
 import { MoneyModel } from '../domain/money.model';
 import { CurrencyType } from '../domain/currency-type.enum';
 
-export function convert(
-  money: MoneyModel,
-  toCurrency: CurrencyType
-): MoneyModel {
+export function convert(money: MoneyModel, toCurrency: CurrencyType): MoneyModel {
   const conversionRate = getConversionRate(money.currency, toCurrency);
   return new MoneyModel({
     currency: toCurrency,
-    amount: money.amount * conversionRate,
+    amount: Number((money.amount * conversionRate).toFixed(4)),
   });
 }
 
-export function getConversionRate(
-  fromCurrency: CurrencyType,
-  toCurrency: CurrencyType
-): number {
+export function getConversionRate(fromCurrency: CurrencyType, toCurrency: CurrencyType): number {
   if (fromCurrency === CurrencyType.RON && toCurrency === CurrencyType.EUR) {
     return 0.2;
   }

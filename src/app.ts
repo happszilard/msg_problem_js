@@ -17,32 +17,38 @@ console.log('[Transaction Manager] 2.', TransactionManagerServiceInstance.checkF
 const transaction1 = TransactionManagerServiceInstance.transfer(
   checkingAccountA.id,
   checkingAccountB.id,
-  new MoneyModel({ amount: 50, currency: CurrencyType.RON })
+  new MoneyModel({ amount: 10.3, currency: CurrencyType.EUR })
 );
 
 console.log('[Transaction Manager] 3.', transaction1);
 console.log('[Transaction Manager] 4.', TransactionManagerServiceInstance.checkFunds(checkingAccountA.id));
 console.log('[Transaction Manager] 5.', TransactionManagerServiceInstance.checkFunds(checkingAccountB.id));
 
-// console.log(
-//   '[Transaction Manager] 6.',
-//   TransactionManagerServiceInstance.withdraw(
-//     checkingAccountC.id,
-//     new MoneyModel({ amount: 5, currency: CurrencyType.EUR })
-//   )
-// );
+console.log(
+  '[Transaction Manager] 6.',
+  TransactionManagerServiceInstance.withdraw(
+    checkingAccountB.id,
+    new MoneyModel({ amount: 5, currency: CurrencyType.EUR })
+  )
+);
+
+console.log('[Transaction Manager] 7.', TransactionManagerServiceInstance.checkFunds(checkingAccountB.id));
 
 console.log('\n------------------------------------\n');
 
 // SAVINGS MANAGER FUNCTIONALITY
 
 console.log('[Saving Manager] 1.', TransactionManagerServiceInstance.checkFunds(savingsAccountA.id));
+console.log('[Saving Manager] 2.', TransactionManagerServiceInstance.checkFunds(savingsAccountB.id));
 
-SavingsManagerServiceInstance.passTime();
-console.log('[Saving Manager] 2.', TransactionManagerServiceInstance.checkFunds(savingsAccountA.id));
 SavingsManagerServiceInstance.passTime();
 console.log('[Saving Manager] 3.', TransactionManagerServiceInstance.checkFunds(savingsAccountA.id));
 console.log('[Saving Manager] 4.', TransactionManagerServiceInstance.checkFunds(savingsAccountB.id));
-console.log('[Saving Manager] 5.', TransactionManagerServiceInstance.checkFunds(checkingAccountA.id));
+
+SavingsManagerServiceInstance.passTime();
+SavingsManagerServiceInstance.passTime();
+console.log('[Saving Manager] 5.', TransactionManagerServiceInstance.checkFunds(savingsAccountA.id));
+console.log('[Saving Manager] 6.', TransactionManagerServiceInstance.checkFunds(savingsAccountB.id));
+console.log('[Saving Manager] 7.', TransactionManagerServiceInstance.checkFunds(checkingAccountA.id));
 
 console.log('\n[SYSTEM]', 'Application closed\n');
