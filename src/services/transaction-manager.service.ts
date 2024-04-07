@@ -4,6 +4,8 @@ import { AccountsRepository } from '../repository/accounts.repository';
 import dayjs from 'dayjs';
 import { AccountType } from '../domain/account-type.enum';
 import { convert } from '../utils/money.utils';
+import { timeStamp } from 'console';
+import { CheckingAccountModel } from '../domain/checking-account.model';
 
 export class TransactionManagerService {
   public transfer(fromAccountId: string, toAccountId: string, value: MoneyModel): TransactionModel {
@@ -27,17 +29,43 @@ export class TransactionManagerService {
       );
     }
 
+    if (value.amount < 0) {
+      throw new Error('The amount of a transfer cannot be a negative value');
+    }
+
+    const targetCurrencyValue = convert(value, toAccount.balance.currency);
+
+    if (fromAccount.balance.amount - targetCurrencyValue.amount < 0) {
+      throw new Error('The result of a transaction must not lead to negative account balance');
+    }
+
+    const fromCheckingAccount = fromAccount as CheckingAccountModel;
+
+    // account has an active associated card
+    if (fromCheckingAccount.associatedCard !== undefined && fromCheckingAccount.associatedCard.active) {
+      const dailyTransactions = fromCheckingAccount.transactions.filter(
+        transaction =>
+          dayjs(transaction.timestamp).isSame(dayjs(), 'date') && transaction.from === fromCheckingAccount.id
+      ) as TransactionModel[];
+
+      // sum of daily outgoing transactions
+      const dailyTransactionsAmount = dailyTransactions.reduce((n, amount) => n + amount.amount.amount, 0);
+
+      if (
+        dailyTransactionsAmount + targetCurrencyValue.amount >
+        fromCheckingAccount.associatedCard.dailyTransactionLimit
+      ) {
+        throw new Error('The maximum amount of money that can be spent using the card in a day has been exceeded');
+      }
+    }
+
     const transaction = new TransactionModel({
       id: crypto.randomUUID(),
       from: fromAccountId,
       to: toAccountId,
-      amount: convert(value, toAccount.balance.currency),
+      amount: targetCurrencyValue,
       timestamp: dayjs().toDate(),
     });
-
-    if (fromAccount.balance.amount - transaction.amount.amount < 0) {
-      throw new Error('The result of a transaction must not lead to negative account balance');
-    }
 
     fromAccount.balance.amount -= transaction.amount.amount;
     fromAccount.transactions = [...fromAccount.transactions, transaction];
@@ -54,17 +82,54 @@ export class TransactionManagerService {
       throw new Error('Specified account does not exist');
     }
 
+    if (amount.amount < 0) {
+      throw new Error('The amount of a withdrawal cannot be a negative value');
+    }
+
+    const targetCurrencyValue = convert(amount, account.balance.currency);
+
+    if (account.balance.amount - targetCurrencyValue.amount < 0) {
+      throw new Error('The result of a withdrawal must not lead to negative account balance');
+    }
+
+    if (account.accountType === AccountType.CHECKING) {
+      const checkingAccount = account as CheckingAccountModel;
+
+      if (checkingAccount.associatedCard !== undefined && checkingAccount.associatedCard.active) {
+        const dailyTransactions = checkingAccount.transactions.filter(
+          transaction => dayjs(transaction.timestamp).isSame(dayjs(), 'date') && transaction.from === checkingAccount.id
+        ) as TransactionModel[];
+
+        // sum of daily transactions
+        const dailyTransactionsAmount = dailyTransactions.reduce((n, amount) => n + amount.amount.amount, 0);
+
+        if (
+          dailyTransactionsAmount + targetCurrencyValue.amount >
+          checkingAccount.associatedCard.dailyTransactionLimit
+        ) {
+          throw new Error('The maximum amount of money that can be spent using the card in a day has been exceeded');
+        }
+
+        const dailyWithdrawals = dailyTransactions.filter(
+          transaction => transaction.to === checkingAccount.id
+        ) as TransactionModel[];
+
+        // sum of daily withdrawals
+        const dailyWithdrawalsAmount = dailyWithdrawals.reduce((n, amount) => n + amount.amount.amount, 0);
+
+        if (dailyWithdrawalsAmount + targetCurrencyValue.amount > checkingAccount.associatedCard.dailyWithdrawalLimit) {
+          throw new Error('The maximum amount of money that can be withdrawn from the card in a day has been exceeded');
+        }
+      }
+    }
+
     const transaction = new TransactionModel({
       id: crypto.randomUUID(),
       from: accountId,
       to: accountId,
-      amount: convert(amount, account.balance.currency),
+      amount: targetCurrencyValue,
       timestamp: dayjs().toDate(),
     });
-
-    if (account.balance.amount - transaction.amount.amount < 0) {
-      throw new Error('The result of a withdrawal must not lead to negative account balance');
-    }
 
     account.balance.amount -= transaction.amount.amount;
     account.transactions = [...account.transactions, transaction];
